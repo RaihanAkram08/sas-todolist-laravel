@@ -199,7 +199,7 @@
     </form>
 </div>
 
-<h1>Selamat Datang {{ auth()->user()->name }} ! ✋</h1>
+<h1>Selamat Datang {{ auth()->user()->name }} !</h1>
 
 <div class="wrap-a">
     <a href="/tasks/create" class="button-gradient">Buat Tugas Baru</a>
