@@ -5,7 +5,7 @@
 <style>
     body {
         font-family: 'Poppins', sans-serif;
-        background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
+        background: linear-gradient(to right, #1e3c72, #2a5298, #6a8edb);
         color: white;
         text-align: center;
         padding: 20px;
@@ -64,16 +64,15 @@
     }
 </style>
 
-
-    <h1>Hapus Tugas Anda</h1>
-    <p>Apakah Anda benar-benar ingin delete Tugas dengan nama: <strong>{{ $task->task }}</strong> ?</p>
-    <form action="/tasks/{{ $task->id }}" method="POST">
-        @csrf
-        @method('DELETE')
-        <div>
-            <a href="/tasks/{{ $task->id }}">Batal</a>
-            <button type="submit">Yakin</button>
-        </div>
-    </form>
+<h1>Hapus Tugas Anda</h1>
+<p>Apakah Anda benar-benar ingin delete Tugas dengan nama: <strong>{{ $task->task }}</strong> ?</p>
+<form action="/tasks/{{ $task->id }}" method="POST">
+    @csrf
+    @method('DELETE')
+    <div>
+        <a href="/tasks/{{ $task->id }}">Batal</a>
+        <button type="submit">Yakin</button>
+    </div>
+</form>
 
 @endsection

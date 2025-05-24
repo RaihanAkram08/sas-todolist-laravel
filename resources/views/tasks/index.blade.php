@@ -2,6 +2,32 @@
 
 @section('content')
 <style>
+    .logout-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+    .logout-form button {
+        background-color: #e63946;
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        background-image: linear-gradient(to right, #6EC1E4, #A0E7F8);
+        box-shadow: 0 4px 12px rgba(110, 193, 228, 0.4);
+    }
+
+    .logout-form button:hover {
+        background-image: linear-gradient(to right, #5BB5DB, #90DDF3);
+        box-shadow: 0 6px 16px rgba(110, 193, 228, 0.6);
+        color: #ffffff;
+    }
+
+
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: #1e1e2f;
@@ -109,6 +135,25 @@
         border-color: #4a6ed1;
     }
 
+    .button-gradient {
+        background-image: linear-gradient(to right, #6EC1E4, #A0E7F8);
+        color: white;
+        padding: 8px 16px;
+        font-weight: 600;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 4px 10px rgba(110, 193, 228, 0.3);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .button-gradient:hover {
+        background-image: linear-gradient(to right, #5BB5DB, #90DDF3);
+        color: #ffffff;
+        box-shadow: 0 6px 14px rgba(110, 193, 228, 0.5);
+    }
+
+
     /* Responsive */
     @media (max-width: 600px) {
         table, thead, tbody, th, td, tr {
@@ -147,13 +192,20 @@
     }
 </style>
 
-<h1>Selamat Datang {{ auth()->user()->name }}</h1>
+<div class="logout-container">
+    <form method="POST" action="{{ route('logout') }}" class="logout-form">
+        @csrf
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<h1>Selamat Datang {{ auth()->user()->name }} ! ✋</h1>
 
 <div class="wrap-a">
-    <a href="/tasks/create">Buat Tugas Baru</a>
+    <a href="/tasks/create" class="button-gradient">Buat Tugas Baru</a>
     <a href="{{ route('tasks.index') }}">Semua Tugas</a> |
-    <a href="{{ route('tasks.index', ['status' => 'notdone']) }}">Belum Selesai</a> |
-    <a href="{{ route('tasks.index', ['status' => 'done']) }}">Sudah Selesai</a>
+    <a href="{{ route('tasks.index', ['status' => 'notdone']) }}">Pending</a> |
+    <a href="{{ route('tasks.index', ['status' => 'done']) }}">Done</a>
 </div>
 
 <table>
@@ -174,8 +226,8 @@
                 </td>
                 <td>
                     <select class="status-dropdown" data-task-id="{{ $task->id }}">
-                        <option value="0" {{ $task->is_completed ? '' : 'selected' }}>Belum selesai</option>
-                        <option value="1" {{ $task->is_completed ? 'selected' : '' }}>Sudah selesai</option>
+                        <option value="0" {{ $task->is_completed ? '' : 'selected' }}>Pending</option>
+                        <option value="1" {{ $task->is_completed ? 'selected' : '' }}>Done</option>
                     </select>
                 </td>
                 <td>
@@ -186,7 +238,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="3">Tidak ada tugas untuk filter ini.</td>
+                <td colspan="3">Tidak ada tugas untuk bagian ini.</td>
             </tr>
         @endforelse
     </tbody>
@@ -196,6 +248,18 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+    // Cek apakah ada session success dari controller
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    // Script untuk dropdown status (seperti yang sudah kamu punya)
     document.querySelectorAll('.status-dropdown').forEach(select => {
         select.addEventListener('change', function() {
             const taskId = this.getAttribute('data-task-id');
@@ -223,7 +287,6 @@
                     showConfirmButton: false
                 });
 
-                // Opsional: update tampilan teks (coret / tidak) sesuai status
                 const row = this.closest('tr');
                 if (newStatus == '1') {
                     row.querySelector('td').classList.add('done-task');

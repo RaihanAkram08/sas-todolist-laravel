@@ -46,7 +46,7 @@ class TaskController extends Controller
         $new_task->is_completed = $request->is_completed;
         $new_task->user_id = Auth::user()->id;
         $new_task->save();
-        return redirect("/tasks");
+        return redirect("/tasks")->with('success', 'Tugas baru berhasil ditambahkan!');
     }
 
     /**
@@ -82,7 +82,7 @@ class TaskController extends Controller
         $task->is_completed = $request->is_completed;
         $task->user_id = Auth::user()->id;
         $task->save();
-        return redirect("/tasks");
+        return redirect("/tasks")->with('success', 'Tugas berhasil diperbarui!');
     }
 
     public function delete(string $id) 
@@ -103,7 +103,7 @@ class TaskController extends Controller
     {
         $task = Task::findOrFail($id);
         $task->delete();
-        return redirect('/tasks');
+        return redirect('/tasks')->with('success', 'Tugas baru berhasil dihapus!');
     }
 
     public function updateStatus(Request $request, Task $task)
@@ -111,10 +111,10 @@ class TaskController extends Controller
         $request->validate([
             'is_completed' => 'required|boolean',
         ]);
-    
+
         $task->is_completed = $request->is_completed;
         $task->save();
-    
+
         return response()->json([
             'task' => $task->task,
             'status_text' => $task->status_text,
